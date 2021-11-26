@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  redis:
+    container_name: redis
+    image: redis:6.0.8-alpine
+    restart: "no"
+    ports:
+      - 6379:6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+      
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    restart: "no"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "root"
+      MONGO_INITDB_ROOT_PASSWORD: "demo1234"
+    volumes:
+      - vi-mongodata:/data/db
+    ports:
+      - "27017-27019:27017-27019"
+
+  api:
+    build: .
+    environment:
+      - MONGODB_URL=mongodb://root:demo1234@mongodb:27017
+      - REDIS_URL=redis://redis:6379
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src:/app/src
+
+volumes:
+  vi-mongodata:
