@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   redis:
@@ -12,7 +12,7 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
-      
+
   mongodb:
     container_name: mongodb
     image: mongo
@@ -34,6 +34,9 @@ services:
       - 3000:3000
     volumes:
       - ./src:/app/src
+    depends_on:
+      - redis
+      - mongodb
 
 volumes:
   vi-mongodata:
